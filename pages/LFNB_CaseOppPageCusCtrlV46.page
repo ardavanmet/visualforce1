@@ -1,0 +1,82 @@
+<apex:page controller="LFNB_App2Opt_vCaseNoMatchV2" tabstyle="LFNB_F1_Case__c" sidebar="false">
+<style>
+.colClass{
+    width:50%;
+    padding: 5px;
+}
+.activeTab {background-color: #236FBD; color:white;
+          background-image:none}
+.inactiveTab { background-color: lightgrey; color:black;
+           background-image:none}
+input.btn[name="del"] {
+    display: none;
+}
+input.btn[name="clone"] {
+    display: none;
+}
+</style>
+<apex:form id="theform">
+<apex:outputPanel id="errorPanel">
+        <apex:pageMessage strength="1" escape="false" severity="info" title="Instructions" 
+            summary="The following applications have zero matching ctiera. <br />
+                     You can select multiple applications and create an opportunity for all of them <br />"  />  
+</apex:outputPanel>
+<apex:pageBlock >
+            <apex:panelGroup >
+                <apex:commandButton value="Potential Matches" action="{!goToPotentialMatchPage}"/>                
+            </apex:panelGroup>
+            <apex:panelGroup >
+                <apex:commandButton value="No Matches" action="{!goToNoMatchPage}"/>                
+            </apex:panelGroup>
+</apex:pageBlock>
+<apex:panelGrid columns="1" width="100%" id="app_section">
+        <apex:pageBlock title="F1 Submissions with no matching detected">
+            <apex:pageBlockTable value="{!apps}" var="c">
+                <apex:column width="25px">
+                    <apex:inputCheckbox value="{!c.selected}"/>
+                </apex:column> 
+                <apex:column headerValue="Name">
+                    <apex:commandLink rerender="case_detail">
+                        <apex:outputText value="{!c.app.name}"/>
+                        <apex:param name="cid" value="{!c.app.Id}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Opp Name">
+                    <apex:outputText value="{!c.app.LFNB_Opportunity_Name__c}"/>
+                </apex:column>
+                <apex:column headerValue="Opp ID">
+                    <apex:outputText value="{!c.app.LFNB_Opportunity_ID__c}"/>
+                </apex:column>
+                <apex:column headerValue="Matching Rating">
+                    <apex:outputText value="{!c.app.LFNB_Matching_Rating__c}%"/>
+                </apex:column>
+            </apex:pageBlockTable>   
+             <!-- count of selected items -->
+            <br/>
+            <!-- next, previous and page info -->
+            <apex:commandLink action="{!doPrevious}" rendered="{!hasPrevious}" value="Previous" />
+            <apex:outputLabel rendered="{!NOT(hasPrevious)}" value="Previous" />
+            <apex:outputLabel value=" (page {!pageNumber} of {!totalPages}) " />
+            <apex:commandLink action="{!doNext}" rendered="{!hasNext}" value="Next" />
+            <apex:outputLabel rendered="{!NOT(hasNext)}" value="Next" />
+        </apex:pageBlock>
+            <apex:panelGroup >
+                <!-- We could have rerendered just the resultsBlock below but we want the  -->
+                <!-- 'See Results' button to update also so that it is clickable. -->
+                <apex:commandButton value="Create" action="{!createOps}" status="status"/>
+                <apex:outputLabel for="searchText">Create a new Opportunity for each selected App</apex:outputLabel>
+            </apex:panelGroup>
+    </apex:panelGrid>
+</apex:form>
+    <apex:pageBlock title="Details" id="case_detail">
+        <apex:outputText value="{!$CurrentPage.parameters.cid}"/>
+        <apex:tabPanel switchType="client" selectedTab="tabdetails" 
+                  id="OpportunityTabPanel" tabClass="activeTab" 
+                  inactiveTabClass="inactiveTab">   
+            <apex:tab label="Details" name="CaseDetails" id="tabdetails">
+                <apex:detail subject="{!$CurrentPage.parameters.cid}" relatedList="false" title="true"/>
+            </apex:tab>
+        </apex:tabPanel>
+        <apex:pageMessages />
+    </apex:pageBlock>
+</apex:page>

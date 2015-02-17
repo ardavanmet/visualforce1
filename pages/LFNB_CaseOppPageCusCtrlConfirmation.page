@@ -1,0 +1,41 @@
+<apex:page tabstyle="LFNB_F1_Case__c" sidebar="false">
+ <script>
+  function confirmCancel() {
+      var isCancel = confirm("Are you sure you wish to cancel?");
+      if (isCancel) return true;
+  
+     return false;
+  }  
+ </script>
+  <apex:sectionHeader title="Application and Opportunity Matching"
+                      subtitle="Step 2 of 2"/>
+  <apex:form >
+    <apex:pageBlock title="Confirmation">
+      <apex:facet name="footer">
+        <apex:outputPanel >
+          <apex:commandButton action="{!cancel}" value="Cancel" 
+                              onclick="return confirmCancel()" immediate="true"/>
+          <apex:commandButton action="{!save}" value="Save"
+                              styleClass="btn"/>
+        </apex:outputPanel>
+      </apex:facet>
+      <apex:pageBlockSection title="Application Information">
+        <apex:panelGrid columns="2">
+          <apex:outputText value="Policy Number"/>
+          <apex:outputText value="Face Amount"/>
+          <apex:outputText value="Product Type"/>
+          <apex:outputText value="Insured First Name"/>
+          <apex:outputText value="Insured Last Name"/>
+          <apex:outputText value="Status"/>
+        </apex:panelGrid>
+      </apex:pageBlockSection>
+      <apex:pageBlockSection title="Opportunity Information">
+        <apex:panelGrid columns="2">
+          <apex:outputText value="Opportunity Name"/>
+          <apex:outputText value="Amount"/>
+          <apex:outputText value="Close Date"/>
+        </apex:panelGrid>
+      </apex:pageBlockSection>
+    </apex:pageBlock>
+  </apex:form>
+  </apex:page>

@@ -1,0 +1,119 @@
+<apex:page controller="LFNB_App2Opt_v2" tabstyle="LFNB_F1_Case__c" sidebar="false">
+<style>
+.colClass{
+    width:50%;
+    padding: 5px;
+}
+.activeTab {background-color: #236FBD; color:white;
+          background-image:none}
+.inactiveTab { background-color: lightgrey; color:black;
+           background-image:none}
+input.btn[name="del"] {
+    display: none;
+}
+input.btn[name="clone"] {
+    display: none;
+}
+</style>
+<apex:form id="theform">
+<apex:outputPanel id="errorPanel">
+        <apex:pageMessage strength="1" escape="false" severity="info" title="Instructions" 
+            summary="Select a case. Potential matches are listed in the Opportunities table. <br/> 
+                     Select one or multiple opportunities. <br />
+                     Click on Create to create a new opportunity and match it with the selected case <br />
+                     Click on Merge to merge the selected opportunities and match it with the selected case."  />  
+</apex:outputPanel>
+<apex:pageBlock >
+            <apex:panelGroup >
+                <apex:commandButton value="Potential Matches" action="{!goToPotentialMatchPage}"/>                
+            </apex:panelGroup>
+            <apex:panelGroup >
+                <apex:commandButton value="No Matches" action="{!goToNoMatchPage}"/>                
+            </apex:panelGroup>
+</apex:pageBlock>
+<apex:panelGrid columns="1" width="100%">
+    <apex:panelGrid columns="1" width="100%">
+        <apex:pageBlock title="F1 Submissions">
+            <apex:pageBlockTable value="{!appsTest}" var="c">
+                <apex:column headerValue="Select Case">
+                    <apex:actionsupport action="{!search}" rerender="opt_section, button_section" event="onclick">  
+                     <!-- When only one radio button can be checked -->
+                     <!-- give the SAME name -->
+                         <input type="radio" name="case" id="{!c.id}" /> 
+                         <apex:param name="cid" value="{!c.Id}"></apex:param>
+                     </apex:actionsupport>        
+                </apex:column>
+                <apex:column headerValue="Name">
+                    <apex:commandLink rerender="case_detail">
+                        <apex:outputText value="{!c.name}"/>
+                        <apex:param name="cid" value="{!c.Id}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Opp Name">
+                    <apex:outputText value="{!c.LFNB_Opportunity_Name__c}"/>
+                </apex:column>
+                <apex:column headerValue="Opp ID">
+                    <apex:outputText value="{!c.LFNB_Opportunity_ID__c}"/>
+                </apex:column>
+                <apex:column headerValue="Matching Rating">
+                    <apex:outputText value="{!c.LFNB_Matching_Rating__c}%"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:pageBlock title="OPPORTUNITIES" id="opt_section">
+            <apex:pageBlockTable value="{!searchOpts}" var="opt"  rendered="{!NOT(ISNULL(searchOpts))}">
+                <apex:column width="25px">
+                    <apex:inputCheckbox value="{!opt.selected}"/>
+                </apex:column>
+                <apex:column headerValue="Name">
+                    <apex:commandLink rerender="opp_detail">
+                        <apex:outputText value="{!opt.opp.name}"/>
+                        <apex:param name="oid" value="{!opt.opp.id}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Stage">
+                    <apex:outputText value="{!opt.opp.stage}"/>
+                </apex:column>
+                <apex:column headerValue="Closing Date">
+                    <apex:outputText value="{!opt.opp.closingDate}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:panelGrid>
+    <apex:pageBlock id="button_section">
+        <apex:pageBlockSection >
+            <apex:panelGroup >
+                <!-- We could have rerendered just the resultsBlock below but we want the  -->
+                <!-- 'See Results' button to update also so that it is clickable. -->
+                <apex:commandButton value="Create" action="{!search}" status="status"/>
+                <apex:outputLabel for="searchText">Create a new Opportunity from the Case</apex:outputLabel>
+            </apex:panelGroup>
+             <br></br>
+            <apex:panelGroup >
+                <!-- We could have rerendered just the resultsBlock below but we want the  -->
+                <!-- 'See Results' button to update also so that it is clickable. -->
+                <apex:commandButton value="Merge" action="{!next}" disabled="{!ISNULL(searchOpts)}"/>
+                <apex:outputLabel for="searchText">Merge the selected Opportunity(ies) with the Case information</apex:outputLabel>
+            </apex:panelGroup>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:panelGrid>
+</apex:form>
+    <apex:pageBlock title="Details" id="opp_detail">
+          <apex:tabPanel switchType="client" selectedTab="tabdetails" 
+                  id="OpportunityTabPanel" tabClass="activeTab" 
+                  inactiveTabClass="inactiveTab">   
+      <apex:tab label="Details" name="OppDetails" id="tabdetails">
+         <apex:detail subject="{!$CurrentPage.parameters.oid}" relatedList="false" title="true"/>
+      </apex:tab>
+      <apex:tab label="Contact Roles" name="Contact Roles" id="tabContact">
+         <apex:relatedList subject="{!$CurrentPage.parameters.oid}" list="OpportunityContactRoles" />
+      </apex:tab>
+      <apex:tab label="Open Activities" name="Open Activities" id="tabActivity">
+         <apex:relatedList subject="{!$CurrentPage.parameters.oid}" list="OpenActivities" />
+      </apex:tab>
+   </apex:tabPanel>
+        <apex:pageMessages />
+    </apex:pageBlock>
+
+</apex:page>

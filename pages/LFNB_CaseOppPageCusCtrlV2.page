@@ -1,0 +1,57 @@
+<apex:page controller="LFNB_App2Opt_v2" tabstyle="LFNB_F1_Case__c" sidebar="false">
+<apex:form id="theform">
+<apex:panelGrid columns="2" width="100%" cellpadding="5" cellspacing="5" >
+    <apex:pageBlock title="CASES">
+        <apex:pageMessages />
+        <apex:pageBlockButtons />
+        <apex:pageBlockTable value="{!appsTest}" var="c">
+            <apex:column headerValue="Select Case">
+                <apex:actionsupport action="{!search}" rerender="opt_section" event="onclick">  
+                 <!-- When only one radio button can be checked -->
+                 <!-- give the SAME name -->
+                     <input type="radio" name="case" id="{!c.id}" /> 
+                     <apex:param name="cid" value="{!c.Id}"></apex:param>
+                 </apex:actionsupport>        
+            </apex:column>
+            <apex:column headerValue="Name">
+                <apex:outputText value="{!c.name}"/>
+            </apex:column>
+            <apex:column headerValue="Opp Name">
+                <apex:outputText value="{!c.LFNB_Opportunity_Name__c}"/>
+            </apex:column>
+            <apex:column headerValue="Opp ID">
+                <apex:outputText value="{!c.LFNB_Opportunity_ID__c}"/>
+            </apex:column>
+        </apex:pageBlockTable>
+        <apex:pageBlockSection >
+            <apex:panelGroup >
+                <!-- We could have rerendered just the resultsBlock below but we want the  -->
+                <!-- 'See Results' button to update also so that it is clickable. -->
+                <apex:commandButton value="Search" action="{!search}" rerender="opt_section" status="status"/>
+                <apex:outputLabel for="searchText">Search for Opts</apex:outputLabel>
+            </apex:panelGroup>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:pageBlock title="OPTS" id="opt_section">
+        <apex:pageBlockButtons >
+           <apex:commandButton action="{!next}" value="Merge Case and Opp" disabled="{!ISNULL(searchOpts)}"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockTable value="{!searchOpts}" var="opt"  rendered="{!NOT(ISNULL(searchOpts))}">
+            <apex:column width="25px">
+                <apex:inputCheckbox value="{!opt.selected}"/>
+            </apex:column>
+            <apex:column headerValue="Name">
+                <apex:outputText value="{!opt.opp.name}"/>
+            </apex:column>
+            <apex:column headerValue="Stage">
+                <apex:outputText value="{!opt.opp.stage}"/>
+            </apex:column>
+            <apex:column headerValue="Closing Date">
+                <apex:outputText value="{!opt.opp.closingDate}"/>
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+</apex:panelGrid>
+</apex:form>
+</apex:page>

@@ -1,0 +1,51 @@
+<apex:page controller="LFNB_App2Opt_v4">
+        <apex:form id="theForm">
+         <apex:pageBlock title="Pagination F1Records" id="mpb">
+            <apex:pageBlock >
+                <apex:selectList id="viewsList" size="1" value="{!filterId}">
+                    <apex:selectOption itemvalue="WithMatches" itemLabel="With Matches"/>
+                    <apex:selectOption itemvalue="NoMatches" itemLabel="No Matches"/>
+                </apex:selectList>
+                <apex:outputLabel value="Select Application View: " for="viewsList"/>
+            </apex:pageblock>
+                <!-- table of data -->
+            <apex:pageBlockTable title="F1 Records" value="{!f1Records}" var="c">
+                <apex:column headerValue="Select Case">
+                     <!-- When only one radio button can be checked -->
+                     <!-- give the SAME name -->
+                         <input type="radio" name="case" id="{!c.id}" /> 
+                </apex:column>
+                <apex:column headerValue="Name">
+                    <apex:commandLink rerender="case_detail">
+                        <apex:outputText value="{!c.name}"/>
+                        <apex:param name="cid" value="{!c.Id}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Opp Name">
+                    <apex:outputText value="{!c.LFNB_Opportunity_Name__c}"/>
+                </apex:column>
+                <apex:column headerValue="Opp ID">
+                    <apex:outputText value="{!c.LFNB_Opportunity_ID__c}"/>
+                </apex:column>
+                <apex:column headerValue="Matching Rating">
+                    <apex:outputText value="{!c.LFNB_Matching_Rating__c}%"/>
+                </apex:column>
+            </apex:pageBlockTable>
+ 
+            <!-- count of selected items -->
+ 
+            <br/>
+ 
+            <!-- next, previous and page info -->
+            <apex:commandLink action="{!doPrevious}" rendered="{!hasPrevious}" value="Previous" />
+            <apex:outputLabel rendered="{!NOT(hasPrevious)}" value="Previous" />
+ 
+            <apex:outputLabel value=" (page {!pageNumber} of {!totalPages}) " />
+ 
+            <apex:commandLink action="{!doNext}" rendered="{!hasNext}" value="Next" />
+            <apex:outputLabel rendered="{!NOT(hasNext)}" value="Next" />
+ 
+        </apex:pageBlock>
+
+        </apex:form>
+</apex:page>

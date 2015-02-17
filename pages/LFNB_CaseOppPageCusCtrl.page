@@ -1,0 +1,33 @@
+<apex:page controller="LFNB_App2Opt" tabstyle="LFNB_F1_Case__c" sidebar="false">
+<apex:panelGrid columns="2" width="100%">
+    <apex:form >
+    <apex:pageBlock title="CASES">
+        <apex:pageBlockTable value="{!appsTest}" var="c">
+            <apex:column headerValue="Name">
+                <apex:commandLink action="{!findOpts}" rerender="opt_section">
+                    <apex:outputText value="{!c.name}"/>
+                    <apex:param name="oname" value="{!c.LFNB_Opportunity_Name__c}"/>
+                    <apex:param name="cid" value="{!c.LFNB_Opportunity_Name__c}"/>
+                </apex:commandLink>
+            </apex:column>
+            <apex:column headerValue="Opp Name">
+                <apex:outputText value="{!c.LFNB_Opportunity_Name__c}"/>
+            </apex:column>
+            <apex:column headerValue="Opp ID">
+                <apex:outputText value="{!c.LFNB_Opportunity_ID__c}"/>
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    <apex:pageBlock title="OPTS" id="opt_section">
+        <apex:pageBlockTable value="{!opts}" var="opt">
+            <apex:column headerValue="Name">
+                <apex:outputText value="{!opt.name}"/>
+            </apex:column>
+        </apex:pageBlockTable>
+        <apex:pageBlockSection >
+            <apex:commandButton action="{!createNewOpt}" value="Create Opt" reRender="opt_section"/>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+</apex:panelGrid>
+</apex:page>

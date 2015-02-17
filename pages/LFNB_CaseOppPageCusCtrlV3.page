@@ -1,0 +1,28 @@
+<apex:page standardController="LFNB_F1_Case__c" recordSetVar="cases" tabstyle="LFNB_F1_Case__c" sidebar="false">
+<style>
+.colClass{
+    width:50%;
+    padding: 5px;
+}
+</style>
+
+<apex:panelGrid columns="1" width="100%">
+    <apex:panelGrid columns="2" width="100%">
+        <apex:pageBlock title="CASES">
+            <apex:pageBlockTable value="{!cases}" var="c">
+                <apex:column value="{!c.name}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:pageBlock title="OPTS1">
+            <apex:pageBlockTable value="{!cases}" var="c">
+                <apex:column value="{!c.name}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:panelGrid>
+    <apex:pageBlock title="Details">
+        <apex:pageBlockTable value="{!cases}" var="c">
+            <apex:column value="{!c.name}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:panelGrid>
+</apex:page>
